@@ -5,12 +5,15 @@
 
 #content
   h3 What Is This For?
-  p Here's the usecase: You opened a HackerNews link from Twitter, from your favorite RSS reader, etc. It always takes you some time to find the original post and comments on HN, which might be more valuable that the link itself.
+  p Here's the usecase: You opened a <a href="news.ycombinator.com/news">HackerNews</a> link from Twitter, Facebook, your favorite RSS reader, or etc. But there's <em>no easy way</em> to check the original post and comments on HN, which might be more valuable that the link itself.
   p This bookmarklet does one simple job: it brings you back to the comment page on HN.
-  h3 How To Install
+  h3 Install
   p Just Drag this 
     span.hackback_button <a href="javascript:(function(){document.body.appendChild(document.createElement('scr'+'ipt')).setAttribute('src', 'http://hackback.cloudfoundry.com/hn.js')})();">Back to HN</a> 
     | to your bookmark bar.
+  h3 How It Works?
+  p HackBack crawls HN's popular and newest page every 3 minutes, it saves the article link and its comment page's url.
+  p When you clicked the bookmarklet, the url is send to HackBack, and HackBack sends you to the comment page. That's it.
 
 #social_buttons.cf
   h3 Share With Your Fellow Hackers

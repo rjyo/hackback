@@ -45,6 +45,11 @@ p {
   font-size: 20px;
 }
 
+p em {
+  text-decoration: underline;
+  font-style: normal;
+}
+
 #header p {
   font-size: 28px;
 }
