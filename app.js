@@ -50,7 +50,6 @@ app.get('/comment.:format?/:url/:cb?', function(req, res) {
   var cb = req.params.cb;
 
   News.findOne({href: url}, function(err, doc) {
-    console.log(doc);
     if (err || doc === null) {
       console.log('Can not found any news with url = ' + url);
       var err_result = {
@@ -89,22 +88,3 @@ if (!module.parent) {
   app.listen(3000);
   console.log("Express server listening on port %d", app.address().port);
 }
-
-// Start crawler job
-var EventEmitter = require('node-evented').EventEmitter;
-var HNCrawler = require('./run').HNCrawler;
-
-// Do as you usual do!
-var emitter = new EventEmitter();
-
-emitter.on('digging', function() {
-  var crawler = new HNCrawler(3);
-  crawler.run('/news', function() {
-    console.log("Will dig HN in 10 sec");
-    setTimeout(function() {
-      emitter.emit('digging');
-    }, 30000);
-  });
-});
-
-emitter.emit('digging');
