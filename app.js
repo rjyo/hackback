@@ -92,19 +92,19 @@ if (!module.parent) {
 
 // Start crawler job
 var EventEmitter = require('node-evented').EventEmitter;
-// var Crawler = require('./run');
+var HNCrawler = require('./run').HNCrawler;
 
 // Do as you usual do!
-var hncrawler = new EventEmitter();
+var emitter = new EventEmitter();
 
-hncrawler.on('digging', function() {
-
-  // This line removes current listener from EventEmitter !
-  //this.removeListener('digging');
-  console.log("Will dig HN in 10 sec");
-  setTimeout(function() {
-    hncrawler.emit('digging');
-  }, 10000);
+emitter.on('digging', function() {
+  var crawler = new HNCrawler(3);
+  crawler.run('/news', function() {
+    console.log("Will dig HN in 10 sec");
+    setTimeout(function() {
+      emitter.emit('digging');
+    }, 30000);
+  });
 });
 
-hncrawler.emit('digging'); // Works!
+emitter.emit('digging');

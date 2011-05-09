@@ -24,7 +24,7 @@ HNCrawler.prototype.run = function(url, cb) {
 
   var _complete = function(err, doc) {
     crawler.counter--;
-    console.log(crawler.counter + "," + crawler.pages);
+    //console.log(crawler.counter + "," + crawler.pages);
     if (crawler.pages == page && crawler.counter === 0) {
       crawler.counter = 0;
       crawler.page = 1;
@@ -41,15 +41,16 @@ HNCrawler.prototype.run = function(url, cb) {
   };
 
 
-  console.log("digging page " + page + " ...");
   jsdom.env(host + url, [ 'jquery-1.6.min.js' ],
     function(errors, window) {
-
       if (errors) {
         console.log("failed in crawling HN page: " + crawler.page);
         console.log(errors);
         process.exit(1);
       }
+
+      console.log("digged page " + page + " ...");
+
       var $ = window.$;
       var links = $('td.title a');
       for (var i = 0; i < links.length; i++) {
@@ -64,7 +65,7 @@ HNCrawler.prototype.run = function(url, cb) {
           crawler.page++;
           console.log("this is the more link: " + host + href);
 
-          if (page <= crawler.pages) {
+          if (crawler.page <= crawler.pages) {
             crawler.run(href, crawler.onCompleted);
           }
         } else {
@@ -89,3 +90,32 @@ c.run("/news", function() {
 */
 
 exports.HNCrawler = HNCrawler;
+
+// Start crawler job
+var EventEmitter = require('node-evented').EventEmitter;
+
+// Do as you usual do!
+var emitter = new EventEmitter();
+var crawler = new HNCrawler(3);
+
+var timeout = 60;
+
+emitter.on('digging_pop', function() {
+  crawler.run('/news', function() {
+    console.log("Will dig HN Newest News in " + timeout + "sec");
+    setTimeout(function() {
+      emitter.emit('digging_new');
+    }, timeout * 1000);
+  });
+});
+
+emitter.on('digging_new', function() {
+  crawler.run('/newest', function() {
+    console.log("Will dig HN Popular News in " + timeout + "sec");
+    setTimeout(function() {
+      emitter.emit('digging_pop');
+    }, timeout * 1000);
+  });
+});
+
+emitter.emit('digging_pop');
