@@ -1,36 +1,52 @@
 var jsdom = require("jsdom"),
     models = require('./model');
 
-var News = models.News;
 var host = "http://news.ycombinator.com";
 
-// how many pages will this crawler dig into
-var pages = 3;
-var counter = 0;
-
-function onCompleted(err, doc) {
-  counter--;
-  if (pages === 0 && counter === 0) {
-    console.log("All saved.");
-    process.exit(0);
-  }
-
-  if (err) {
-    console.log(err);
-    console.log(doc);
-  }
+function HNCrawler(pages) {
+  this.pages = pages || 3;
+  this.counter = 0;
+  this.onCompleted = undefined;
+  this.page = 1;
 }
 
-function crawlHN(url) {
-  if (pages === 0) {
+HNCrawler.prototype.run = function(url, cb) {
+  this.onCompleted = cb;
+
+  if (this.pages === 0) {
     console.log("All pages crawled.");
     return;
   }
 
+  // do crawling
+  var crawler = this;
+  var page = this.page;
+
+  var _complete = function(err, doc) {
+    crawler.counter--;
+    console.log(crawler.counter + "," + crawler.pages);
+    if (crawler.pages == page && crawler.counter === 0) {
+      crawler.counter = 0;
+      crawler.page = 1;
+      console.log("All saved.");
+      if (crawler.onCompleted) {
+        crawler.onCompleted();
+      }
+    }
+
+    if (err) {
+      console.error(err);
+      console.error(doc);
+    }
+  };
+
+
+  console.log("digging page " + page + " ...");
   jsdom.env(host + url, [ 'jquery-1.6.min.js' ],
     function(errors, window) {
+
       if (errors) {
-        console.log("failed in crawling HN page: " + (4 - pages));
+        console.log("failed in crawling HN page: " + crawler.page);
         console.log(errors);
         process.exit(1);
       }
@@ -45,17 +61,31 @@ function crawlHN(url) {
         var comment = commentlink.attr('href');
 
         if (commentlink.html() === null) {
+          crawler.page++;
           console.log("this is the more link: " + host + href);
-          console.log("digging page " + (4 - pages) + " ...");
 
-          pages--;
-          crawlHN(href);
+          if (page <= crawler.pages) {
+            crawler.run(href, crawler.onCompleted);
+          }
         } else {
-          counter++;
-          models.saveNews(title, href, comment, onCompleted);
+          crawler.counter++;
+          models.saveNews(title, href, comment, _complete);
         }
       }
   });
-}
+};
 
-crawlHN("/news");
+// how many pages will this crawler dig into
+
+/*
+ * a demo here
+ *
+ ----------------
+var c = new HNCrawler(3);
+c.run("/news", function() {
+  console.log("hello");
+  process.exit(0);
+});
+*/
+
+exports.HNCrawler = HNCrawler;

@@ -1,13 +1,12 @@
 var mongoose = require('mongoose');
 mongoose.connect('mongodb://localhost/hncrawler');
-Schema = mongoose.Schema,
-ObjectId = Schema.ObjectId;
+Schema = mongoose.Schema;
 
 // Salary schema
 var News= new Schema({
   title:   {type: String, default: '', required: true, index: true },
   href:    {type: String, default: '', required: true, index: true },
-  comment_href: {type: String, default: '', required: true},
+  comment: {type: String, default: '', required: true},
   created_at: {type: Date, default: Date.now},
   updated_at: {type: Date, default: Date.now}
 });
@@ -22,11 +21,11 @@ function saveNews(title, href, comment, callback) {
   doc.comment = comment;
 
   News.collection.findAndModify({ href: doc.href}, [],
-    {$set: doc}, {'new': true, upsert: true}, function(err) {
+    {$set: doc}, {'new': false, upsert: true}, function(err) {
     if (err) {
       console.log(err);
     } else {
-      console.log("Updated/Created: " + doc.title);
+      console.log('Updated/Created: ' + doc.title);
     }
     if (callback) {
       callback(err, doc);

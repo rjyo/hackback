@@ -9,6 +9,7 @@ var express = require('express'),
     models = require('./model');
 
 var News = models.News;
+var HNHost = "http://news.ycombinator.com";
 
 // Configuration
 
@@ -31,152 +32,79 @@ app.configure('production', function() {
   app.use(express.errorHandler()); 
 });
 
+app.get('/', function(req, res) {
+  res.render('index', {
+    title: 'Back to HN'
+  });
+});
 
-function chooseLayout(req) {
-  var layout = !req.headers['x-pjax'];
-  var ua = req.headers['user-agent'];
-
-  // if (layout && (ua && ua.match(/(iPhone|iPod|Android)/))) {
-  //   layout = 'mobile';
-  // }
-
-  return layout;
+function sendJSONP (res, cb, json) {
+  var jsonp = cb + '(' + JSON.stringify(json) + ')';
+  res.header('Content-Type', 'application/javascript');
+  res.send(jsonp);
 }
 
-app.get('/', function(req, res) {
+app.get('/comment.:format?/:url/:cb?', function(req, res) {
+  var url = req.params.url;
+  var format = req.params.format;
+  var cb = req.params.cb;
 
-  res.render('index', {
-    title: 'Geolary - Worldwide Salary - the Secret You Should Know!',
-    layout: chooseLayout(req)
-  });
-});
+  News.findOne({href: url}, function(err, doc) {
+    console.log(doc);
+    if (err || doc === null) {
+      console.log('Can not found any news with url = ' + url);
+      var err_result = {
+        errcode: -1
+      };
 
-app.get('/privacy.html', function(req, res) {
-  var useLayout = !req.headers['x-pjax'];
-
-  res.render('privacy', {
-    title: 'Geolary - Privacy Policy',
-    layout: chooseLayout(req)
-  });
-});
-
-// JSON API
-// Listing of Articles
-app.get('/salaries/json/:long,:lat/:device_token?', function(req, res) {
-  var loc_long = Number(req.params.long);
-  var loc_lat = Number(req.params.lat);
-  var token = req.params.device_token;
-
-  models.getStats(loc_long, loc_lat, token, function(result) {
-    res.send(result);
-  });
-});
-
-// Show webpage salary with lng/lat
-app.get('/salaries/:long,:lat/:device_token?', function(req, res) {
-  var loc_long = Number(req.params.long);
-  var loc_lat = Number(req.params.lat);
-  var token = req.params.device_token;
-
-  var layout = chooseLayout(req);
-  var mapSize = layout == 'mobile'? '300x200' : '520x340';
-
-  models.getStats(loc_long, loc_lat, token, function(result) {
-    res.render('salaries/show', {
-      title: 'Geolary - Worldwide Salary',
-      long: loc_long,
-      lat: loc_lat,
-      stats: result,
-      mapSize: mapSize,
-      layout: layout
-    });
-  });
-});
-
-app.post('/query/zip', function(req, res) {
-  var zip = req.body.zip;
-
-  if (isNaN(zip)) {
-    res.send({
-      errcode: -1
-    });
-    return;
-  } else {
-    console.log('finding zip: ' + zip);
-    Zip.findOne({zip_code: zip}, function(err, doc) {
-      if (err || doc === null) {
-        console.log('not found');
-        res.send({
-          errcode: -1
-        });
+      if (cb) {
+        sendJSONP(res, cb, err_result);
       } else {
-        res.send(doc);
+        res.send(err_result);
       }
-    });
-  }
-});
+    } else {
+      console.log('Found news with url = ' + url);
+      var result = {
+          title: doc.title,
+          href: doc.href,
+          comment: HNHost + '/' + doc.comment
+      };
 
-// Create/Update salaries
-app.post('/salaries/json', function(req, res) {
-  var row = req.body.salary;
-  var loc_long = Number(row['loc.long']);
-  var loc_lat = Number(row['loc.lat']);
-  delete(row['loc.long']);
-  delete(row['loc.lat']);
-  row.loc = {'long': loc_long, 'lat': loc_lat};
-
-  // check sign
-  var data = row.device_id + row.currency + row.amount + "huafen";
-  var digest = crypto.createHash('md5').update(data).digest("hex");
-  if (digest != row.sign) {
-    console.log('failed to pass sign validation.');
-    res.send({errcode: -1, msg: 'failed to pass sign validation.'});
-  } else if (row.amount < 1000) {
-    console.log('strange amount: ' + row.amount);
-    res.send({errcode: -2, msg: 'annual salary less than 1000, pass.'});
-  } else {
-    // no need to save sign
-    delete(row.sign);
-
-    row.amount = Number(row.amount.trim().replace(' ', ''));
-
-    Currency.findOne({name: row.currency}, function(err, c) {
-      if (err || !c) {
-        console.log(err);
-      } else {
-        console.log('Calculating salary in USD.');
-        row.usd_amount = row.amount / c.price;
-
-        // omit too high / too low numbers
-        if (row.usd_amount >= 2000000 || row.usd_amount < 5000) {
-          console.log('omit too high / too low numbers: ' + row.usd_amount);
-          res.send({errcode: 0});
+      if (format == 'json') {
+        if (cb) {
+          sendJSONP(res, cb, result);
         } else {
-          row.fake = false;
-          row.created_at = Date.now();
-
-          console.log(row);
-
-          Salary.collection.findAndModify({device_id: row.device_id}, [], 
-              {$set: row}, {'new': true, upsert: true}, function(err) {
-            if (err) {
-              console.log(err);
-              res.send({errcode: -1, msg: 'failed to update record.'});
-            } else {
-              console.log('Created/Updated');
-              res.send({errcode: 0});
-            }
-          });
+          res.send(result);
         }
+      } else {
+        res.render('news', result);
       }
-    });
-  }
+    }
+  });
 });
+
 
 // Only listen on $ node app.js
-
 if (!module.parent) {
   app.listen(3000);
   console.log("Express server listening on port %d", app.address().port);
 }
 
+// Start crawler job
+var EventEmitter = require('node-evented').EventEmitter;
+// var Crawler = require('./run');
+
+// Do as you usual do!
+var hncrawler = new EventEmitter();
+
+hncrawler.on('digging', function() {
+
+  // This line removes current listener from EventEmitter !
+  //this.removeListener('digging');
+  console.log("Will dig HN in 10 sec");
+  setTimeout(function() {
+    hncrawler.emit('digging');
+  }, 10000);
+});
+
+hncrawler.emit('digging'); // Works!

@@ -16,6 +16,7 @@
     "jade": "",
     "request": "",
     "jsdom": "",
+    "node-evented": "",
     "cluster": ""
   }
 }
