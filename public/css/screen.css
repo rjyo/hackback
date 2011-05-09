@@ -1,0 +1,125 @@
+html {
+  background-image: url(/images/bg.png);
+  background-color: #242424;
+  background-attachment: fixed;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background: url(/images/light.png) top center no-repeat;
+  background-attachment: scroll;
+  margin: 0;
+  padding: 0;
+}
+
+#main {
+  max-width: 680px;
+  width: 76%;
+  margin: 0 auto;
+  color: #e2e2e2;
+  padding-top: 80px;
+}
+
+.highlight {
+  color: #ff5d28;
+}
+
+h1 {
+  font-family: 'Expletus Sans', sans-serif;
+  font-size: 46px;
+  margin: 0;
+  padding: 0;
+}
+
+h3 {
+  font-family: 'Expletus Sans', sans-serif;
+  font-size: 30px;
+  margin: 50px 0 0 0;
+  /* line-height: 20px;*/
+  color: #e6ea50;
+}
+
+p {
+  font-family: 'Terminal Dosis Light', sans-serif;
+  font-size: 20px;
+}
+
+#header p {
+  font-size: 28px;
+}
+
+a {
+  text-decoration: none;
+  color: #B1D631;
+}
+
+a:hover {
+  color: #ff5d28;
+}
+
+.hackback_button a {
+  border: 3px solid #333;
+  background-color: #EEE;
+  border-radius: 5px;
+  padding: 5px;
+  background-color: black;
+}
+
+.hackback_button a:hover {
+  background: #222;
+}
+
+#social_buttons div{
+  float: left;
+}
+
+#social_buttons .buttons {
+  clear: both;
+  margin-top: 20px;
+}
+
+#social_buttons {
+  clear: both;
+}
+
+#by {
+  margin: 60px 0 40px;
+  padding: 10px;
+  background: #333;
+  border-radius: 5px;
+  opacity: 0.5;
+  -webkit-transition: opacity 0.2s linear;
+}
+
+#by:hover {
+  opacity: 1.0;
+  -webkit-transition: opacity 0.2s linear;
+}
+
+#by p {
+  font-size: 18px;
+  padding: 0;
+  margin: 10px;
+}
+
+#by p.alignright {
+  text-align: right;
+}
+
+/* For modern browsers */
+.cf:before,
+.cf:after {
+    content:"";
+    display:table;
+}
+
+.cf:after {
+    clear:both;
+}
+
+/* For IE 6/7 (trigger hasLayout) */
+.cf {
+    zoom:1;
+}
+

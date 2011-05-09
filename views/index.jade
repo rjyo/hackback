@@ -1,3 +1,28 @@
-h3 hello world
+#header
+  h1 Say Hello to 
+    span.highlight HackBack
+  p this bookmarklet leads you back to HackerNews
 
-| <a href="javascript:(function(){document.body.appendChild(document.createElement('scr'+'ipt')).setAttribute('src', 'http://hackback.cloudfoundry.com/hn.js')})();">Back to HN</a>
+#content
+  h3 What Is This For?
+  p Here's the usecase. You opened a HackerNews link from Twitter, from your favorite RSS reader, etc. It always takes you some time to find the original post on HN, which is the most valuable information on HN.
+  p This bookmarklet does one simple job: it brings you back to the comment page on HN.
+  h3 How To Install
+  p Just Drag this 
+    span.hackback_button <a href="javascript:(function(){document.body.appendChild(document.createElement('scr'+'ipt')).setAttribute('src', 'http://hackback.cloudfoundry.com/hn.js')})();">Back to HN</a> 
+    | to your bookmark bar.
+
+#social_buttons.cf
+  h3 Share With Your Fellow Hackers
+  .buttons
+    .twitter_button
+      | <a href="http://twitter.com/share" class="twitter-share-button" data-count="horizontal">Tweet</a><script type="text/javascript" src="http://platform.twitter.com/widgets.js"></script>
+    .facebook_button
+      | <iframe src="http://www.facebook.com/plugins/like.php?href=http%3A%2F%2Fgeolary.com&amp;layout=button_count&amp;show_faces=false&amp;width=450&amp;action=like&amp;font&amp;colorscheme=light&amp;height=21" scrolling="no" frameborder="0" style="border:none; overflow:hidden; width:250px; height:21px;" allowTransparency="true"></iframe>
+
+#by
+  p <a href='#'>HackBack</a> runs on <a href='http://www.cloudfoundry.com/'>Cloud Foundry</a>, a PAAS service by VMWare, which is really easy to deploy. Without it you may not see it comes online.
+  p This bookmark is written in <a href='http://nodejs.org'>node.js</a> using <a href='https://github.com/visionmedia/express'>express</a> framework, with a backend of <a href='http://www.mongodb.org/'>MongoDB</a>. You can <a href='https://github.com/rjyo/hackback'>fork the source on GitHub</a>.
+  p.alignright - Brought you by 
+    a(href='http://twitter.com/xu_lele') Jyo 
+    | , with love. 

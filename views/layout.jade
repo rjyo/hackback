@@ -1,6 +1,15 @@
 !!! 5
 html
   head
+    link(rel='stylesheet', href='/css/screen.css', media="screen, projection")
     title= title
   body
-    .main!= body
+    #main!= body
+
+  script
+    WebFontConfig = {
+      google: { families: ['Expletus Sans', 'Terminal Dosis Light'] }
+    };
+
+  != partial('partials/webfont')
+  != partial('partials/ga')
