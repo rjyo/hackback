@@ -2,6 +2,8 @@
  * Module dependencies.
  */
 
+require.paths.unshift('./node_modules');
+
 var express = require('express'),
     sys = require('sys'),
     crypto = require('crypto'),
@@ -85,6 +87,8 @@ app.get('/comment.:format?/:url/:cb?', function(req, res) {
 
 // Only listen on $ node app.js
 if (!module.parent) {
-  app.listen(3000);
+  app.listen(process.env.VMC_APP_PORT || 3000);
   console.log("Express server listening on port %d", app.address().port);
 }
+
+var crawler = require('./run');

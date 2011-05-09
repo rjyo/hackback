@@ -1,6 +1,6 @@
 var l = window.location.href;
 var el = encodeURIComponent(l);
-var apiUrl = "http://localhost:3000/comment.json/";
+var apiUrl = "http://hackback.cloudfoundry.com/comment.json/";
 
 function jsonp(src){
   var s = document.createElement('script');

@@ -82,10 +82,10 @@ HNCrawler.prototype.run = function(url, cb) {
  * a demo here
  *
  ----------------
-var c = new HNCrawler(3);
+var c = new HNCrawler(1);
 c.run("/news", function() {
-  console.log("hello");
-  process.exit(0);
+  console.log("finished");
+//  process.exit(0);
 });
 */
 
@@ -96,9 +96,9 @@ var EventEmitter = require('node-evented').EventEmitter;
 
 // Do as you usual do!
 var emitter = new EventEmitter();
-var crawler = new HNCrawler(3);
+var crawler = new HNCrawler(4);
 
-var timeout = 60;
+var timeout = 90;
 
 emitter.on('digging_pop', function() {
   crawler.run('/news', function() {
