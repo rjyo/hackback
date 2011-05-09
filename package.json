@@ -1,8 +1,8 @@
 {
   "name": "hncrawler",
-  "description": "HackNews Crawler",
+  "description": "Back to HackNews, and a Crawler",
   "version": "0.0.1",
-  "homepage": "hncrawler.com",
+  "homepage": "hackback.jyorr.com",
   "author": "Rakuraku Jyo (http://twitter.com/xu_lele)",
   "directories": {
     "public": "./public"
@@ -14,7 +14,6 @@
     "express": "",
     "mongoose": "",
     "jade": "",
-    "request": "",
     "jsdom": "",
     "node-evented": "",
     "cluster": ""
