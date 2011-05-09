@@ -13,7 +13,6 @@ if (boundServices === null) {
                            + "@" + credentials["hostname"]
                            + ":" + credentials["port"]
                            + "/" + credentials["db"]);
-  console.log(db);
 }
 
 Schema = mongoose.Schema;
@@ -36,8 +35,7 @@ function saveNews(title, href, comment, callback) {
   doc.href = href;
   doc.comment = comment;
 
-  console.log("try saving: " + doc.title);
-
+  // console.log("try saving: " + doc.title);
   // News.findOne({href: href}, function(err, d) {
   //   if (!err) {
   //     if (d === null) {

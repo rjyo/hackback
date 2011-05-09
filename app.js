@@ -91,4 +91,4 @@ if (!module.parent) {
   console.log("Express server listening on port %d", app.address().port);
 }
 
-// var crawler = require('./run');
+var crawler = require('./run');
