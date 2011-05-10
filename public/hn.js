@@ -18,6 +18,11 @@ function srvCallback (doc) {
   if (!doc.errcode) {
     window.location = doc.comment;
   } else {
-    alert("Can't find this article on HN");
+    var answer = confirm("Can't find this article on HackerNews recently. Do you want to post it?");
+    if (answer) {
+      window.location = "http://news.ycombinator.com/submitlink?u=" + 
+        encodeURIComponent(document.location) + "&t=" + 
+        encodeURIComponent(document.title);
+    }
   }
 }
