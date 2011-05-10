@@ -1,5 +1,5 @@
-var l = window.location.href;
-var el = encodeURIComponent(l);
+var l = window.location;
+var el = encodeURIComponent(l.href);
 var apiUrl = "http://hackback.cloudfoundry.com/comment.json/";
 
 function jsonp(src){
@@ -12,6 +12,8 @@ function jsonp(src){
   s.src = src + '?' + new Date().getTime();
 }
 
+if (/^news\.ycombinator\.com$/.test(l.host)) return;
+
 jsonp(apiUrl + el + "/srvCallback");
 
 function srvCallback (doc) {
@@ -20,8 +22,8 @@ function srvCallback (doc) {
   } else {
     var answer = confirm("Can't find this article on HackerNews recently. Do you want to post it?");
     if (answer) {
-      window.location = "http://news.ycombinator.com/submitlink?u=" + 
-        encodeURIComponent(document.location) + "&t=" + 
+      window.location = "http://news.ycombinator.com/submitlink?u=" +
+        encodeURIComponent(document.location) + "&t=" +
         encodeURIComponent(document.title);
     }
   }
