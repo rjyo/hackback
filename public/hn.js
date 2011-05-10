@@ -12,10 +12,6 @@ function jsonp(src){
   s.src = src + '?' + new Date().getTime();
 }
 
-if (/^news\.ycombinator\.com$/.test(l.host)) return;
-
-jsonp(apiUrl + el + "/srvCallback");
-
 function srvCallback (doc) {
   if (!doc.errcode) {
     window.location = doc.comment;
@@ -28,3 +24,10 @@ function srvCallback (doc) {
     }
   }
 }
+
+if (/^news\.ycombinator\.com$/.test(l.host)) {
+  console.log('Already on HN');
+} else {
+  jsonp(apiUrl + el + "/srvCallback");
+}
+
