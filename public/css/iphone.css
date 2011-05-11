@@ -1,0 +1,12 @@
+@import url(http://fonts.googleapis.com/css?family=Open+Sans+Condensed:light);
+#by {
+  opacity: 1.0;
+}
+
+#main {
+  width: 86%;
+}
+
+p {
+  font-family: 'Open Sans Condensed', sans-serif;
+}
