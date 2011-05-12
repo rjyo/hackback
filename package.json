@@ -17,6 +17,7 @@
     "jade": "",
     "jsdom": "",
     "node-evented": "",
-    "cluster": ""
+    "cluster": "",
+    "log": ""
   }
 }

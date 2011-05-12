@@ -35,30 +35,10 @@ function saveNews(title, href, comment, callback) {
   doc.href = href;
   doc.comment = comment;
 
-  // console.log("try saving: " + doc.title);
-  // News.findOne({href: href}, function(err, d) {
-  //   if (!err) {
-  //     if (d === null) {
-  //       console.log("not found, save one");
-  //       var news = new News(doc);
-  //       news.save(function(err) {
-  //         console.log('Created: ' + doc.title);
-  //       });
-  //     } else {
-  //       console.log("found, no need to save.");
-  //     }
-  //   }
-  //   if (callback) {
-  //     callback(err, doc);
-  //   }
-  // });
-
   News.collection.findAndModify({ href: doc.href}, [],
     {$set: doc}, {'new': false, upsert: true}, function(err) {
     if (err) {
       console.log(err);
-    } else {
-      console.log('Updated/Created: ' + doc.title);
     }
     if (callback) {
       callback(err, doc);
