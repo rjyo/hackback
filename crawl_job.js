@@ -9,7 +9,7 @@ var HNCrawler = require('./lib/crawler').HNCrawler;
 var emitter = new EventEmitter();
 var crawler = new HNCrawler(5);
 
-var timeout = 180; // in seconds
+var timeout = 5 * 60; // in seconds
 
 emitter.on('digging_pop', function() {
   crawler.run('/news', function() {
