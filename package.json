@@ -17,6 +17,6 @@
     "jade": "",
     "jsdom": "",
     "node-evented": "",
-    "cluster": ""
+    "socket.io-node": ""
   }
 }

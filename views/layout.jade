@@ -2,13 +2,36 @@
 html
   head
     link(href='http://fonts.googleapis.com/css?family=Expletus+Sans:600', rel='stylesheet', type='text/css')
-    link(href='http://fonts.googleapis.com/css?family=Terminal+Dosis+Light', rel='stylesheet', type='text/css')
     link(rel='stylesheet', href='/css/screen.css', media="screen, projection")
+    | <script src="/socket.io/socket.io.js"></script>
     // for iphone
     meta(name="viewport", content="width=320, initial-scale=1.0, maximum-scale=1.0, user-scalable=no")
+    link(media="only screen and (min-device-width:481px)", href='http://fonts.googleapis.com/css?family=Terminal+Dosis+Light', rel='stylesheet', type='text/css')
     link(media="only screen and (max-device-width:480px)", href="/css/iphone.css", type="text/css", rel="stylesheet")
     title= title
   body
     #main!= body
 
   != partial('partials/ga')
+
+  script
+    function message(obj) {
+      // console.log("local");
+      // console.log(obj);
+    }
+
+    var socket = new io.Socket(null, {port: 3000, rememberTransport: false});
+    socket.connect();
+
+    socket.on('message', function(obj){
+      console.log(obj);
+      // if ('buffer' in obj){
+      //   for (var i in obj.buffer) message(obj.buffer[i]);
+      // } else message(obj);
+    });
+
+    socket.on('connect', function(){ message({ message: ['System', 'Connected']})});
+    socket.on('disconnect', function(){ message({ message: ['System', 'Disconnected']})});
+    socket.on('reconnect', function(){ message({ message: ['System', 'Reconnected to server']})});
+    socket.on('reconnecting', function( nextRetry ){ message({ message: ['System', 'Attempting to re-connect to the server, next attempt in ' + nextRetry + 'ms']})});
+    socket.on('reconnect_failed', function(){ message({ message: ['System', 'Reconnected to server FAILED.']})});

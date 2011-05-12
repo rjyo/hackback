@@ -13,8 +13,6 @@ var express = require('express'),
 var News = models.News;
 var HNHost = "http://news.ycombinator.com";
 
-// Configuration
-
 app.configure(function() {
   app.set('views', __dirname + '/views');
   app.set('view engine', 'jade');
@@ -26,12 +24,12 @@ app.configure(function() {
 });
 
 app.configure('development', function() {
-  app.use(express.errorHandler({ dumpExceptions: true, showStack: true })); 
+  app.use(express.errorHandler({ dumpExceptions: true, showStack: true }));
   app.use(express.logger('  \033[90m:method\033[0m \033[36m:url\033[0m \033[90m:response-timems\033[0m'));
 });
 
 app.configure('production', function() {
-  app.use(express.errorHandler()); 
+  app.use(express.errorHandler());
 });
 
 app.get('/', function(req, res) {
@@ -92,3 +90,43 @@ if (!module.parent) {
 }
 
 var crawler = require('./crawl_job');
+
+
+/**
+ * Important note: this application is not suitable for benchmarks!
+ */
+
+var http = require('http')
+  , url = require('url')
+  , fs = require('fs')
+  , io = require('socket.io')
+  , sys = require(process.binding('natives').util ? 'util' : 'sys');
+
+// socket.io, I choose you
+// simplest chat application evar
+var io = io.listen(app)
+  , buffer = [];
+
+io.on('connection', function(client){
+  client.send({ buffer: buffer });
+  client.broadcast({ announcement: client.sessionId + ' connected' });
+
+  client.on('message', function(message){
+    console.log(message);
+    var msg = { message: [client.sessionId, message] };
+    buffer.push(msg);
+    if (buffer.length > 15) buffer.shift();
+    client.broadcast(msg);
+    client.send("echo " + message);
+  });
+
+  client.on('disconnect', function(){
+     client.broadcast({ announcement: client.sessionId + ' disconnected' });
+  });
+
+});
+
+setInterval(function(){
+  io.broadcast("hello world!" + new Date());
+}, 1000);
+
