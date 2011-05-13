@@ -7,7 +7,7 @@ var HNCrawler = require('./lib/crawler').HNCrawler;
 
 // Do as you usual do!
 var emitter = new EventEmitter();
-var crawler = new HNCrawler(2);
+var crawler = new HNCrawler(5);
 
 var timeout = 5 * 60; // in seconds
 
