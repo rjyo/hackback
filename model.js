@@ -22,7 +22,7 @@ var News= new Schema({
   title:   {type: String, default: '', required: true, index: false },
   href:    {type: String, default: '', required: true, index: true },
   comment: {type: String, default: '', required: true},
-  c_count: {type: Number, default: 0, required: true},
+  c_count: {type: Number, default: 0},
   created_at: {type: Date, default: Date.now},
   updated_at: {type: Date, default: Date.now}
 });
