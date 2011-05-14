@@ -19,9 +19,10 @@ Schema = mongoose.Schema;
 
 // News schema
 var News= new Schema({
-  title:   {type: String, default: '', required: true, index: true },
+  title:   {type: String, default: '', required: true, index: false },
   href:    {type: String, default: '', required: true, index: true },
   comment: {type: String, default: '', required: true},
+  c_count: {type: Number, default: 0, required: true},
   created_at: {type: Date, default: Date.now},
   updated_at: {type: Date, default: Date.now}
 });
@@ -29,11 +30,13 @@ var News= new Schema({
 mongoose.model('News', News);
 var News = exports.News = db.model('News'); // as we attained db variable, db.model not mongoose.model
 
-function saveNews(title, href, comment, callback) {
+function saveNews(title, href, comment, c_count, callback) {
   var doc = {};
   doc.title = title;
   doc.href = href;
   doc.comment = comment;
+  doc.c_count = c_count;
+  doc.updated_at = new Date();
 
   News.collection.findAndModify({ href: doc.href}, [],
     {$set: doc}, {'new': false, upsert: true}, function(err) {

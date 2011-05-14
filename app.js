@@ -89,6 +89,26 @@ app.get('/comment.:format?/:url/:cb?', function(req, res) {
   });
 });
 
+app.get('/summary', function (req, res) {
+  log.info('GET /summary');
+
+  News.count({}, function(err, count) {
+    if (err) {
+      res.send({err_result: -1});
+    } else {
+      News.find({})
+        .sort('_id','descending')
+        .limit(1)
+        .each(function(err, doc) {
+          if (!err) {
+            res.send({count: count, last_insert: doc});
+          }
+          return;
+        });
+    }
+  });
+});
+
 
 // Only listen on $ node app.js
 if (!module.parent) {
