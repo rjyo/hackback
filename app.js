@@ -14,6 +14,7 @@ var express = require('express'),
 
 var News = models.News;
 var HNHost = "http://news.ycombinator.com";
+var crawler = require('./crawl_job');
 
 // Configuration
 
@@ -96,15 +97,8 @@ app.get('/summary', function (req, res) {
     if (err) {
       res.send({err_result: -1});
     } else {
-      News.find({})
-        .sort('_id','descending')
-        .limit(1)
-        .each(function(err, doc) {
-          if (!err) {
-            res.send({count: count, last_insert: doc});
-          }
-          return;
-        });
+      log.info(crawler.last_run());
+      res.send({count: count, last_run: crawler.last_run()});
     }
   });
 });
@@ -116,4 +110,3 @@ if (!module.parent) {
   log.info("Express server listening on port " + app.address().port);
 }
 
-var crawler = require('./crawl_job');
