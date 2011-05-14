@@ -49,4 +49,5 @@ function saveNews(title, href, comment, c_count, callback) {
   });
 }
 
-exports.saveNews = saveNews;
+News.saveNews = saveNews;
+// exports.saveNews = saveNews;
