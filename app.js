@@ -1,8 +1,7 @@
 /**
  * Module dependencies.
  */
-
-require.paths.unshift('./node_modules');
+require.paths.unshift('./node_modules'); // for CloudFoundry.com
 
 var express   = require('express')
   , sys       = require('sys')
@@ -12,10 +11,10 @@ var express   = require('express')
   , Log       = require('log')
   , log       = new Log(Log.INFO)
   , News      = models.News
-  , HNHost    = "http://news.ycombinator.com"
   , crawler   = require('./lib/job');
 
 // Configuration
+var HNHost    = "http://news.ycombinator.com"
 
 app.configure(function() {
   app.set('views', __dirname + '/views');
@@ -101,6 +100,29 @@ app.get('/summary', function (req, res) {
   });
 });
 
+app.get('/gc', function (req, res, next) {
+  log.info('GET /gc');
+
+  var d = Date.now();
+  d = d - 14 * 24 * 60 * 60 * 1000; // remove links 2 weeks ago
+  var valid_date = new Date(d);
+
+  News.count({}, function(err, count) {
+    var before = count;
+
+    News.remove({'updated_at': { $lt : valid_date}}, function(err) {
+      if (err) {
+        next(err);
+        return;
+      }
+
+      News.count({}, function(err, count) {
+        res.send({before: before, after: count});
+      });
+
+    });
+  });
+});
 
 // Only listen on $ node app.js
 if (!module.parent) {
