@@ -13,24 +13,28 @@ var last_run = new Date();
 emitter.on('digging_pop', function() {
   crawler.run('/news', function() {
     last_run = new Date();
-    var timeout = 10 + Math.random()  * 10;
+    var timeout = randomDelay();
     log.info("Will dig HN Newest News in " + timeout + " secs");
     setTimeout(function() {
       emitter.emit('digging_new');
-    }, timeout * 1000);
+    }, timeout);
   });
 });
 
 emitter.on('digging_new', function() {
   crawler.run('/newest', function() {
     last_run = new Date();
-    var timeout = 10 + Math.random()  * 10;
+    var timeout = randomDelay();
     log.info("Will dig HN Popular News in " + timeout + " secs");
     setTimeout(function() {
       emitter.emit('digging_pop');
     }, timeout);
   });
 });
+
+var randomDelay = function() {
+  return (20 + Math.random()  * 5) * 1000;
+};
 
 emitter.emit('digging_new');
 
