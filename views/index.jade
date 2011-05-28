@@ -8,9 +8,9 @@
   p Here's the usecase: You opened a <a href="http://news.ycombinator.com/news">HackerNews</a> link from Twitter, Facebook, your favorite RSS reader, or etc. But there's <em>no easy way</em> to check the original post and comments on HN, which might be more valuable than the link itself.
   p This bookmarklet does one simple job: it brings you back to the comment page on HN.
   h3 Install
-  p Just Drag this 
+  p Just drag this 
     span.hackback_button <a href="javascript:(function(){document.body.appendChild(document.createElement('scr'+'ipt')).setAttribute('src', 'http://hackback.cloudfoundry.com/hn.js')})();">B2HN</a> 
-    | to your bookmark bar.
+    | to your bookmark bar. Or you can click it to see what people say about it on HackerNews.
   h3 How It Works?
   p HackBack crawls HN's popular and newest page every 3 minutes, it saves the article's link and its comment page's url.
   p When you clicked the bookmarklet, the url is send to HackBack, and HackBack sends you to the comment page. That's it.
@@ -25,8 +25,8 @@
       | <iframe src="http://www.facebook.com/plugins/like.php?href=http%3A%2F%2Fhackback.cloudfoundry.com&amp;layout=button_count&amp;show_faces=false&amp;width=450&amp;action=like&amp;font&amp;colorscheme=light&amp;height=21" scrolling="no" frameborder="0" style="border:none; overflow:hidden; width:250px; height:21px;" allowTransparency="true"></iframe>
 
 #by
-  p <a href='#'>HackBack</a> runs on <a href='http://www.cloudfoundry.com/'>Cloud Foundry</a>, a PAAS service by VMWare, which is really easy to deploy. Without it you may not see it comes online.
-  p This bookmark is written in <a href='http://nodejs.org'>node.js</a> using <a href='https://github.com/visionmedia/express'>express</a> framework, with a backend of <a href='http://www.mongodb.org/'>MongoDB</a>. You can <a href='https://github.com/rjyo/hackback'>fork the source on GitHub</a>.
+  p <a href='#'>HackBack</a> runs on <a href='http://www.cloudfoundry.com/'>Cloud Foundry</a>, a PaaS service by VMWare, which is really easy to deploy. Without it you may not see it comes online.
+  p This bookmark is written in <a href='http://nodejs.org'>node.js</a> using <a href='https://github.com/visionmedia/express'>express</a> framework. Data is stored in 10gen's <a href='http://www.mongodb.org/'>MongoDB</a>. You can <a href='https://github.com/rjyo/hackback'>fork the source on GitHub</a>.
   p.alignright - Brought you by 
     a(href='http://jyorr.com') Jyo 
     | , with love. 
