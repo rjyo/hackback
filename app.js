@@ -4,17 +4,16 @@
 
 require.paths.unshift('./node_modules');
 
-var express = require('express'),
-    sys = require('sys'),
-    crypto = require('crypto'),
-    app = module.exports = express.createServer(),
-    models = require('./model'),
-    Log = require('log'),
-    log = new Log(Log.INFO);
-
-var News = models.News;
-var HNHost = "http://news.ycombinator.com";
-var crawler = require('./crawl_job');
+var express   = require('express')
+  , sys       = require('sys')
+  , crypto    = require('crypto')
+  , app       = module.exports = express.createServer()
+  , models    = require('./lib/model')
+  , Log       = require('log')
+  , log       = new Log(Log.INFO)
+  , News      = models.News
+  , HNHost    = "http://news.ycombinator.com"
+  , crawler   = require('./lib/job');
 
 // Configuration
 
@@ -45,7 +44,7 @@ app.get('/', function(req, res) {
   });
 });
 
-function sendJSONP (res, cb, json) {
+function sendJSONP(res, cb, json) {
   var jsonp = cb + '(' + JSON.stringify(json) + ')';
   res.header('Content-Type', 'application/javascript');
   res.send(jsonp);
@@ -97,7 +96,6 @@ app.get('/summary', function (req, res) {
     if (err) {
       res.send({err_result: -1});
     } else {
-      log.info(crawler.last_run());
       res.send({count: count, last_run: crawler.last_run()});
     }
   });
