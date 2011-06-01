@@ -23,16 +23,15 @@ app.configure(function() {
   app.use(express.cookieParser());
   app.use(app.router);
   app.use(express.static(__dirname + '/public'));
+  app.use(express.logger('[:date] INFO :method :url :response-timems'));
 });
 
 app.configure('development', function() {
   app.use(express.errorHandler({ dumpExceptions: true, showStack: true }));
-  app.use(express.logger('  \033[90m:method\033[0m \033[36m:url\033[0m \033[90m:response-timems\033[0m'));
 });
 
 app.configure('production', function() {
   app.use(express.errorHandler());
-  app.use(express.logger('[:date] INFO :method :url :response-timems'));
 });
 
 app.get('/', function(req, res) {
@@ -67,7 +66,8 @@ app.get('/api/comment/:url/:cb?', function(req, res) {
       result = {
           title: doc.title,
           href: doc.href,
-          comment: HNHost + '/' + doc.comment
+          comment: HNHost + '/' + doc.comment,
+          count: doc.c_count
       };
     }
 
