@@ -79,7 +79,13 @@ app.get('/api/comment/:url/:cb?', function(req, res) {
   });
 });
 
-app.get('/aip/summary', function (req, res) {
+app.get('/api/statistics', function(req, res) {
+  AccessCounter.stats(function (err, doc) {
+    res.send(doc);
+  });
+});
+
+app.get('/api/summary', function(req, res) {
   log.info('GET /summary');
 
   News.count({}, function(err, count) {
@@ -92,7 +98,7 @@ app.get('/aip/summary', function (req, res) {
   });
 });
 
-app.get('/aip/gc', function (req, res, next) {
+app.get('/api/gc', function(req, res, next) {
   log.info('GET /gc');
 
   var d = Date.now();
