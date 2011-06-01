@@ -1,6 +1,6 @@
 var l = window.location;
 var el = encodeURIComponent(l.href);
-var apiUrl = "http://hackback.cloudfoundry.com/comment.json/";
+var apiUrl = "http://hackback.cloudfoundry.com/api/comment/";
 
 function jsonp(src){
   var s = document.createElement('script');
@@ -9,7 +9,7 @@ function jsonp(src){
   s.charset = 'UTF-8';
   s.id = 'srvCall';
   document.body.insertBefore(s, document.body.firstChild);
-  s.src = src + '?' + new Date().getTime();
+  s.src = src + '?' + Date.now();
 }
 
 function srvCallback (doc) {

@@ -3,18 +3,18 @@
  */
 require.paths.unshift('./node_modules'); // for CloudFoundry.com
 
-var express   = require('express')
-  , sys       = require('sys')
-  , crypto    = require('crypto')
-  , app       = module.exports = express.createServer()
-  , models    = require('./lib/model')
-  , Log       = require('log')
-  , log       = new Log(Log.INFO)
-  , News      = models.News
-  , crawler   = require('./lib/job');
+var express     = require('express')
+, sys           = require('sys')
+, crypto        = require('crypto')
+, app           = module.exports = express.createServer()
+, models        = require('./lib/model')
+, Log           = require('log')
+, log           = new Log(Log.INFO)
+, News          = models.News
+, AccessCounter = models.AccessCounter
+, crawler       = require('./lib/job');
 
-// Configuration
-var HNHost    = "http://news.ycombinator.com"
+var HNHost      = "http://news.ycombinator.com";  // Configuration
 
 app.configure(function() {
   app.set('views', __dirname + '/views');
@@ -49,58 +49,50 @@ function sendJSONP(res, cb, json) {
   res.send(jsonp);
 }
 
-app.get('/comment.:format?/:url/:cb?', function(req, res) {
+app.get('/api/comment/:url/:cb?', function(req, res) {
   log.info('GET /comment');
   var url = req.params.url;
-  var format = req.params.format;
   var cb = req.params.cb;
 
+  AccessCounter.incr();
+
   News.findOne({href: url}, function(err, doc) {
+    var result;
+
     if (err || doc === null) {
       log.info('Can not found any news with url = ' + url);
-      var err_result = {
-        errcode: -1
-      };
-
-      if (cb) {
-        sendJSONP(res, cb, err_result);
-      } else {
-        res.send(err_result);
-      }
+      result = { errcode: -1 };
     } else {
       log.info('Found news with url = ' + url);
-      var result = {
+      result = {
           title: doc.title,
           href: doc.href,
           comment: HNHost + '/' + doc.comment
       };
+    }
 
-      if (format == 'json') {
-        if (cb) {
-          sendJSONP(res, cb, result);
-        } else {
-          res.send(result);
-        }
-      } else {
-        res.render('news', result);
-      }
+    if (cb) {
+      sendJSONP(res, cb, result);
+    } else {
+      res.send(result);
     }
   });
 });
 
-app.get('/summary', function (req, res) {
+app.get('/aip/summary', function (req, res) {
   log.info('GET /summary');
 
   News.count({}, function(err, count) {
     if (err) {
-      res.send({err_result: -1});
+      console.log(err);
+      res.send(500);
     } else {
       res.send({count: count, last_run: crawler.last_run()});
     }
   });
 });
 
-app.get('/gc', function (req, res, next) {
+app.get('/aip/gc', function (req, res, next) {
   log.info('GET /gc');
 
   var d = Date.now();
@@ -119,7 +111,6 @@ app.get('/gc', function (req, res, next) {
       News.count({}, function(err, count) {
         res.send({before: before, after: count});
       });
-
     });
   });
 });
