@@ -10,6 +10,7 @@ var express       = require('express')
   , models        = require('./lib/model')
   , Log           = require('log')
   , log           = new Log(Log.INFO)
+  , crawler       = null
   , News          = models.News
   , AccessCounter = models.AccessCounter;
 
@@ -126,6 +127,6 @@ if (!module.parent) {
   app.listen(process.env.VMC_APP_PORT || 3000);
   log.info("Express server listening on port " + app.address().port);
 
-  require('./lib/job'); // start crawler job
+  crawler = require('./lib/job'); // start crawler job
 }
 
