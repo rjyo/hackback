@@ -11,8 +11,7 @@ var express     = require('express')
 , Log           = require('log')
 , log           = new Log(Log.INFO)
 , News          = models.News
-, AccessCounter = models.AccessCounter
-, crawler       = require('./lib/job');
+, AccessCounter = models.AccessCounter;
 
 var HNHost      = "http://news.ycombinator.com";  // Configuration
 
@@ -119,5 +118,7 @@ app.get('/aip/gc', function (req, res, next) {
 if (!module.parent) {
   app.listen(process.env.VMC_APP_PORT || 3000);
   log.info("Express server listening on port " + app.address().port);
+
+  require('./lib/job'); // start crawler job
 }
 

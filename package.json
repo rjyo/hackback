@@ -16,6 +16,7 @@
     "mongoose": "",
     "jade": "",
     "jsdom": "",
+    "request": "",
     "node-evented": "",
     "log": ""
   }
