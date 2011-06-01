@@ -3,17 +3,17 @@
  */
 require.paths.unshift('./node_modules'); // for CloudFoundry.com
 
-var express     = require('express')
-, sys           = require('sys')
-, crypto        = require('crypto')
-, app           = module.exports = express.createServer()
-, models        = require('./lib/model')
-, Log           = require('log')
-, log           = new Log(Log.INFO)
-, News          = models.News
-, AccessCounter = models.AccessCounter;
+var express       = require('express')
+  , sys           = require('sys')
+  , crypto        = require('crypto')
+  , app           = module.exports = express.createServer()
+  , models        = require('./lib/model')
+  , Log           = require('log')
+  , log           = new Log(Log.INFO)
+  , News          = models.News
+  , AccessCounter = models.AccessCounter;
 
-var HNHost      = "http://news.ycombinator.com";  // Configuration
+var HNHost = "http://news.ycombinator.com";  // Configuration
 
 app.configure(function() {
   app.set('views', __dirname + '/views');
@@ -53,15 +53,16 @@ app.get('/api/comment/:url/:cb?', function(req, res) {
   var url = req.params.url;
   var cb = req.params.cb;
 
-  AccessCounter.incr();
 
   News.findOne({href: url}, function(err, doc) {
     var result;
 
     if (err || doc === null) {
+      AccessCounter.incr('miss');
       log.info('Can not found any news with url = ' + url);
       result = { errcode: -1 };
     } else {
+      AccessCounter.incr('hit');
       log.info('Found news with url = ' + url);
       result = {
           title: doc.title,
@@ -83,7 +84,7 @@ app.get('/aip/summary', function (req, res) {
 
   News.count({}, function(err, count) {
     if (err) {
-      console.log(err);
+      log.error(err);
       res.send(500);
     } else {
       res.send({count: count, last_run: crawler.last_run()});
